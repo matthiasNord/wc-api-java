@@ -1,7 +1,6 @@
 package com.icoderman.woocommerce.oauth;
 
 import com.icoderman.woocommerce.HttpMethod;
-import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,6 +14,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.apache.hc.client5.http.utils.Base64;
 
 /**
  * WooCommerce specific OAuth signature generator

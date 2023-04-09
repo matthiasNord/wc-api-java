@@ -2,27 +2,27 @@ package com.icoderman.woocommerce;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
 
 public class DefaultHttpClient implements HttpClient {
 
@@ -93,7 +93,7 @@ public class DefaultHttpClient implements HttpClient {
         }
     }
 
-    private Map postEntity(Map<String, Object> objectForJson, HttpEntityEnclosingRequestBase httpPost) {
+    private Map postEntity(Map<String, Object> objectForJson, HttpUriRequestBase httpPost) {
         try {
             HttpEntity entity = new ByteArrayEntity(this.mapper.writeValueAsBytes(objectForJson), ContentType.APPLICATION_JSON);
             httpPost.setEntity(entity);
@@ -113,9 +113,8 @@ public class DefaultHttpClient implements HttpClient {
         return postParameters;
     }
 
-    private <T> T getEntityAndReleaseConnection(HttpRequestBase httpRequest, Class<T> objectClass) {
-        try {
-            HttpResponse httpResponse = httpClient.execute(httpRequest);
+    private <T> T getEntityAndReleaseConnection(HttpUriRequestBase httpRequest, Class<T> objectClass) {
+        try (CloseableHttpResponse httpResponse = httpClient.execute(httpRequest)) {
             HttpEntity httpEntity = httpResponse.getEntity();
             if (httpEntity == null) {
                 throw new RuntimeException("Error retrieving results from http request");
@@ -127,8 +126,6 @@ public class DefaultHttpClient implements HttpClient {
             throw new RuntimeException("Can't parse retrieved object: " + result.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            httpRequest.releaseConnection();
         }
     }
 }

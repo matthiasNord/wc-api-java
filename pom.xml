@@ -4,7 +4,7 @@
 
     <groupId>com.icoderman</groupId>
     <artifactId>wc-api-java</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.6-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>WooCommerce API Java Wrapper</name>
@@ -47,7 +47,7 @@
 
     <properties>
         <jackson.version>2.10.0</jackson.version>
-        <httpclient.version>4.5.10</httpclient.version>
+        <httpclient.version>5.2.1</httpclient.version>
         <junit.version>4.12</junit.version>
     </properties>
 
@@ -64,10 +64,9 @@
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
             <version>${httpclient.version}</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
