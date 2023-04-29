@@ -1,11 +1,9 @@
 package com.icoderman.woocommerce.oauth;
 
 import com.icoderman.woocommerce.HttpMethod;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -14,7 +12,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.apache.hc.client5.http.utils.Base64;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * WooCommerce specific OAuth signature generator
@@ -79,10 +79,10 @@ public class OAuthSignature {
         Mac macInstance;
         try {
             macInstance = Mac.getInstance(HMAC_SHA256);
-            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(UTF_8), HMAC_SHA256);
+            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), HMAC_SHA256);
             macInstance.init(secretKey);
-            return Base64.encodeBase64String(macInstance.doFinal(signatureBaseString.getBytes(UTF_8)));
-        } catch (NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
+            return Base64.encodeBase64String(macInstance.doFinal(signatureBaseString.getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
     }
